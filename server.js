@@ -1,4 +1,8 @@
 // Setup empty JS object to act as endpoint for all routes
+const express = require("express");
+const app = express()
+const bodyParser = require("body-parser");
+
 projectData = {};
 
 // Require Express to run server and routes

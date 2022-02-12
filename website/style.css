@@ -23,9 +23,6 @@ body {
     margin: 0 20px;
 }
 
-.holder {
-
-}
 
 .entry {
     background: white;
@@ -34,20 +31,9 @@ body {
 }
 
 #entryHolder {
-
+ padding: 20px;
 }
 
-#date {
-
-}
-
-#temp {
-
-}
-
-#content {
-
-}
 
 .headline {
     background-color: #262f44;
@@ -57,9 +43,14 @@ body {
 }
 
 .title {
-
+    color: var(--titleColor);
+    font-family: 'Oswald', sans-serif;
+    display: block;
+    font-size: 27px;
+    background: var(--backgroundColor);
+    margin-top: 40px;
+    padding: 10px;
 }
-
 /*  Basic Styling To Override Default For Basic HTML Elements */
 label {
     display: block;
@@ -70,8 +61,7 @@ input {
     display: block;
     height: 60px;
     width: 320px;
-    /*background:#22b2da;*/
-    color: var(--titleColor);
+    /*color: var(--titleColor);*/
     font-size: 20px;
     font-family: 'Oswald', sans-serif;
     border: none;
@@ -123,4 +113,7 @@ button:focus {
 ::-ms-input-placeholder { /* Microsoft Edge */
     font-family: 'Oswald', sans-serif;
 
-} 
+}
+
+
+
