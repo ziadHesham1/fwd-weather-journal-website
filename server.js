@@ -1,5 +1,5 @@
 /* Empty JS object to act as endpoint for all routes */
-projectData = [];
+projectData = {};
 
 /* Express to run server and routes */
 const express = require('express');
@@ -20,27 +20,20 @@ app.use(express.static('website'));
 
 const port = 8000;
 /* Spin up the server*/
-const server = app.listen(port, listening);
-
-function listening() {
-    // console.log(server);
+app.listen(port, () => {
     console.log(`running on localhost: ${port}`);
-};
+});
 
-// GET route
-app.get('/all', sendData);
-
-function sendData(request, response) {
-    response.send(projectData);
-};
 
 // POST route
-app.post('/add', callBack);
+app.post('/sendData', (request, response) => {
 
-function callBack(req, res) {
-    let newEntry = {
-        date: req.body.date, temp: req.body.temp, content: req.body.content
-    }
-    projectData.push(newEntry)
-}
+    projectData.date = request.body.date
+    projectData.temp = request.body.temp
+    projectData.content = request.body.content
+});
 
+// GET route
+app.get('/retrieveData', (request, response) => {
+    response.send(projectData);
+});
