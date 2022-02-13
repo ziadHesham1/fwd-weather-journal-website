@@ -1,5 +1,6 @@
 /* Global Variables */
-const weatherResult = document.querySelector('#temp');
+
+const tempResult = document.querySelector('#temp');
 const dateResult = document.querySelector('#date');
 const feelingsResult = document.querySelector('#content');
 const zipInput = document.querySelector('#zip');
@@ -8,51 +9,82 @@ const generateBtn = document.querySelector('#generate');
 
 // Create a new date instance dynamically with JS
 let d = new Date();
-let newDate = `${d.getMonth()}/${d.getDate()}/${d.getFullYear()}`;
-DUMMY_TEXT = 'from dom'
+let newDate = `${d.getMonth() + 1}.${d.getDate()}.${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}` ;
 
-class FetchWeather {
-    async getCurrent(zipCode) {
-        const myKey = "f29aa3c785b3486902bdbc67295f4d97";
 
-        //make request to url
-        const response = await fetch(
-            `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode}&appid=${myKey}&units=metric`
-        );
 
-        const data = await response.json();
 
-        // console.log(data);
+generateBtn.addEventListener("click", generateResults);
 
-        return data.main.temp;
-    }
+function generateResults() {
+    let userFeelings = feelingsInput.value
+    getWeather().then(value => {
+        postData('/add', {date: newDate, temp: value, content: userFeelings})
+        retrieveData();
+    })
 }
 
 
-const ft = new FetchWeather();
-// const zipInput = 90210
-
-generateBtn.addEventListener("click", function (e) {
-
-    // set variable with  zipcode input
-    // and print it to the console
-    // console.log(`zipInput : ${userZipcode}`);
-
-    // set variable with feelings input
-    let userFeelings = feelingsInput.value
-    // and print it to the console
-    // console.log(`feelingsInput : ${userFeelings}`);
-    // give the feeling var to the feeling div
-    feelingsResult.textContent = `your feeling: ${userFeelings}`
-
-    // give the date to the date div
-    dateResult.textContent = `date: ${newDate}`
-
-    // get the weather with the zipcode variable 
-    // and set it and to a variable
-    // give the weather temp to the temp div
-    ft.getCurrent(zipInput.value).then(receivedWeather =>
-        weatherResult.textContent = `current weather: ${receivedWeather}`
+// https://api.openweathermap.org/data/2.5/weather?zip=90210&appid=f29aa3c785b3486902bdbc67295f4d97&units=metric
+const getWeather = async () => {
+    const myKey = "f29aa3c785b3486902bdbc67295f4d97";
+    const zipCode = zipInput.value
+    const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?zip=${zipCode}&appid=${myKey}&units=metric`
     );
+    const data = await response.json();
 
-});
+    console.log(`weather data `);
+    // console.log(data);
+
+    return data.main.temp;
+}
+
+const postData = async (url = '', data = {}) => {
+    // console.log(data)
+    const response = await fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)  // body data type must match "Content-Type" header
+    });
+
+   /* try {
+        const newData = await response.json();
+        console.log(`newData : `);
+        console.log(newData);
+        return newData
+    } catch (error) {
+
+        console.log("error: ", error);
+        // appropriately handle the error
+    }*/
+}
+
+
+const retrieveData = async () => {
+
+
+    let response = await fetch('/all');
+
+    if (response.ok) { // if HTTP-status is 200-299
+        // get the response body (the method explained below)
+        await response.json().then(udateData);
+
+        function udateData(data) {
+            /*console.log('allData:');
+            console.log(data[data.length - 1]);*/
+            let allData = data[data.length - 1]
+            dateResult.textContent = `Date: ${allData.date}`
+            tempResult.textContent = `Current temperature: ${allData.temp}`
+            feelingsResult.textContent = `You're feeling: ${allData.content}`
+        }
+
+
+    } else {
+        alert("HTTP-Error: " + response.status);
+    }
+}
+
